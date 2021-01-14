@@ -1,0 +1,17 @@
+setup:
+  config:
+      LIVE_DB_HOST: us-cdbr-east-03.cleardb.com
+      DB_USER: bbe0981cb28eb1
+      LIVE_DB_PASSWORD: be3b9210
+      DB_NAME: heroku_4adccb1d179d193
+      DEPLOY: live
+      EVENT_REGION: tw
+      DOMAIN: shortenurl.work.tw
+      LANGUAGE_CODE: zh-hant
+      TIME_ZONE: Asia/Taipei
+
+build:
+  docker:
+    web: Dockerfile.gunicorn
+  config:
+      REQUIREMENTS=server
