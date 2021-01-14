@@ -33,17 +33,4 @@ DATABASES = {
             'use_unicode': True,
         },
     },
-    'slave': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': os.environ.get('LIVE_DB_SLAVE_HOST'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('LIVE_DB_PASSWORD'),
-        'NAME': os.environ.get('DB_NAME'),
-        'PORT': os.environ.get('DB_PORT'),
-        'CONN_MAX_AGE': 3600,
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'use_unicode': True,
-        },
-    },
 }

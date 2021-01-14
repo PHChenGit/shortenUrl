@@ -27,7 +27,7 @@ TEST = DEPLOY_ENV == 'test'
 DOMAIN = _COOKIE_DOMAIN
 
 ALLOWED_HOSTS = [
-    DOMAIN,
+    DOMAIN, 'https://hsun-shorter.herokuapp.com/',
 ]
 
 MIDDLEWARE = (
