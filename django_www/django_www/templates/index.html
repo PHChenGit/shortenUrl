@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuizShortenUrl</title>
+
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+</head>
+<body>
+    <div>
+        <label for="makeShorter">Make shorter</label>
+        <input type="url" id="makeShorter", name="ori_url">
+        <button onclick="shorter.create();">Submit</button>
+        Shorten url:
+        <p id="newUrl"></p>
+    </div>
+
+    <div>
+        <label for="parseShortUrl">Parse short url</label>
+        <input type="url" id="parseShortUrl", name="short_url">
+        <button onclick="shorter.get();">Submit</button>
+        Original url:
+        <p id="originalUrl"></p>
+    </div>
+
+    <script>
+        function getCsrfToken() {
+            const metas = document.getElementsByTagName('meta');
+            for (let m of metas) {
+                if (m.getAttribute('name') === 'csrf-token') {
+                    return m.getAttribute('content')
+                }
+            }
+        }
+
+        const shorter = {
+            create: function () {
+                let ori_url = document.getElementById('makeShorter').value;
+                fetch('/api/create', {
+                    headers: {
+                        'Content-Type': 'applications/json',
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    method: 'POST',
+                    body: JSON.stringify({ori_url: ori_url})
+                })
+                    .then(resp => {
+                        if (!resp.ok) {
+                            throw new Error(resp.statusText)
+                        }
+                        return resp.json()
+                    })
+                    .then(resp => {
+                        if (resp.status_code != '0000') {
+                            throw new Error(resp.msg);
+                        }
+                        alert(resp.result);
+                        let newUrl = resp.content.new_url;
+                        let pEl = document.getElementById('newUrl');
+                        pEl.textContent = newUrl;
+                    })
+                    .catch(err => {
+                        alert(err);
+                    });
+            },
+            get: function () {
+                let ori_url = document.getElementById('parseShortUrl').value;
+                fetch('/api/parse', {
+                    headers: {
+                        'Content-Type': 'applications/json',
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    method: 'POST',
+                    body: JSON.stringify({ori_url: ori_url})
+                })
+                    .then(resp => {
+                        if (!resp.ok) {
+                            throw new Error(resp.statusText)
+                        }
+                        return resp.json()
+                    })
+                    .then(resp => {
+                        if (resp.status_code != '0000') {
+                            throw new Error(resp.msg);
+                        }
+                        alert(resp.result);
+                        let newUrl = resp.content.ori_url;
+                        let pEl = document.getElementById('originalUrl');
+                        pEl.textContent = newUrl;
+                    })
+                    .catch(err => {
+                        alert(err);
+                    });
+            }
+        }
+
+    </script>
+</body>
+</html>

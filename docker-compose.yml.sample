@@ -1,0 +1,61 @@
+version: "3.7"
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: percona:5.7
+    ports:
+      - "6606:3306"
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: app
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.openresty
+      args:
+        - REQUIREMENTS=local
+    links:
+      - mysql:db1
+      - redis:cache1
+      - app:localhost
+    ports:
+      - "9999:80"
+    # If want to test the image that runs on LIVE env, please mark this section
+    volumes:
+      - .:/var/www/shorten_url.work.tw/
+      - ./django_www/logs:/usr/local/openresty/nginx/logs/
+    command: "sh -c 'sed -i \"s/172.16.0.10/127.0.0.11/g\" /usr/local/openresty/nginx/conf/nginx.conf && echo \"\" > /etc/hosts && openresty -p .'"
+    environment:
+      - DEPLOY=dev
+      - EVENT_REGION=tw
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.gunicorn
+      args:
+        - REQUIREMENTS=local
+    links:
+      - redis:cache1
+      - mysql:db1
+    expose:
+      - "8000"
+    # If want to test the image that runs on LIVE env, please mark this section
+    volumes:
+      - .:/var/www/shorten_url.work.tw/
+    command: "sh -c 'pip freeze > /var/www/shorten_url.work.tw/deploy/requirements/server && tail -f /var/www/shorten_url.work.tw/deploy/requirements/server'"
+    working_dir: /var/www/shorten_url.work.tw/
+    environment:
+      - DEPLOY=dev
+      - DOMAIN=shortenurl.work.tw
+      - EVENT_REGION=tw
+      - LANGUAGE_CODE=zh-hant
+      - TIME_ZONE=Asia/Taipei

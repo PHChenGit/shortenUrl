@@ -1,0 +1,10 @@
+.git
+.gitignore
+.gitlab-ci.yml
+.dockerignore
+.editorconfig
+Dockerfile.gunicorn
+Dockerfile.openresty
+docker-compose.yml
+django_www/logs/
+REMADE.md

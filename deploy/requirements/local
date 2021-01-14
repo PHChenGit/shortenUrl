@@ -1,0 +1,24 @@
+gunicorn
+PyMySQL>=0.8.1
+django-redis==4.10.0
+django-redis-sessions
+django-redis-cache>=1.6.5
+python-redis-lock
+social-auth-core>=3.3.0
+social-auth-app-django
+##################
+django>2.0,<2.1
+hiredis
+requests
+python-dateutil
+pytz
+django-mysql==3.7.1
+netaddr
+dnspython
+# for common package
+jsonschema
+simplejson
+# google api
+google-api-python-client==1.8.0
+google-auth-httplib2==0.0.3
+google-auth-oauthlib==0.4.1

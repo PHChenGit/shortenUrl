@@ -1,0 +1,23 @@
+FROM python:3.8.7-slim-buster
+
+ARG REQUIREMENTS
+
+### Install requirements
+ADD deploy/requirements/${REQUIREMENTS} /tmp/
+RUN python3 -m ensurepip && \
+	pip3 install --upgrade pip && \
+    pip3 install --upgrade setuptools && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip; fi && \
+    if [ ! -e /usr/bin/python ]; then ln -s python3 /usr/bin/python; fi && \
+    pip3 install  -r /tmp/${REQUIREMENTS} && \
+    rm -r /tmp/${REQUIREMENTS} /root/.cache
+
+### Install Timezone Package and Set Timezone
+RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+
+### Set Work Path and Pack Your Code to Work Path
+WORKDIR /var/www/shorten_url.work.tw
+ADD django_www /var/www/shorten_url.work.tw/.
+ADD deploy/cmd_script /var/www/shorten_url.work.tw/cmd_script
+RUN mkdir /var/www/shorten_url.work.tw/logs
