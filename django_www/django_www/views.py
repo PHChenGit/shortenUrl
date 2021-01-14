@@ -1,9 +1,8 @@
 import json
 
-from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .decorators import locker
 from .services import shorten_url_service
@@ -36,5 +35,6 @@ def show_url(request):
 @csrf_protect
 @require_http_methods(['GET'])
 @locker
-def redirect_shorten_url(request):
-    pass
+def redirect_shorten_url(request, uri, *args, **kwargs):
+    url = shorten_url_service.get_original_url(request.build_absolute_uri(uri))
+    return redirect(url)
