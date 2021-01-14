@@ -1,5 +1,3 @@
-from collections import Counter
-from typing import List
 from unittest.mock import patch
 
 from django.test import SimpleTestCase
